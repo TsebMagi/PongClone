@@ -26,6 +26,7 @@
         //scores
         var player1Score=0;
         var player2Score=0;
+        const WINNING_SCORE=5;
 
         function calculateMousePos(evt){
             var rect=canvas.getBoundingClientRect();
@@ -86,6 +87,10 @@
         }
 
         function ballReset(){
+            if(player1Score>=WINNING_SCORE||player2Score>=WINNING_SCORE){
+                player1Score=0;
+                player2Score=0;
+            }
             ballSpeedX*=-1;
             ballX=canvas.width/2;
             ballY=canvas.height/2
@@ -126,6 +131,7 @@
                  player2Score++;
                  reset=true;
              }
+             //reset after scoring to avoid off by 1 bug
              if(reset==true){ballReset();}
 
              if(ballY>canvas.height-ballRadius || ballY-ballRadius<0){
