@@ -69,12 +69,18 @@
             canvasContext.fillRect(leftX,topY,width,height);
         }
 
+        function ballReset(){
+            ballX=canvas.width/2;
+            ballY=canvas.height/2
+        }
+
         function moveEverything(){
              //update ball position
              ballX+=ballSpeedX;
              ballY+=ballSpeedY;
              if(ballX>canvas.width-ballRadius || ballX-ballRadius<0){
                  ballSpeedX*=-1;
+                 ballReset();
              }
              if(ballY>canvas.height-ballRadius || ballY-ballRadius<0){
                  ballSpeedY*=-1;
