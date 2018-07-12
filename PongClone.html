@@ -1,5 +1,4 @@
 <html>
-    <p>Below is the script.</p>
     <canvas id="gameCanvas" width="800"
     height="600"></canvas>
     <script>
@@ -27,6 +26,8 @@
         var player1Score=0;
         var player2Score=0;
         const WINNING_SCORE=5;
+        //gameflow
+        var showingWinScreen=false;
 
         function calculateMousePos(evt){
             var rect=canvas.getBoundingClientRect();
@@ -37,6 +38,14 @@
                 x:mouseX,
                 y:mouseY
             };
+        }
+
+        function handleMouseClick(evt){
+            if(showingWinScreen){
+                player1Score=0;
+                player2Score=0;
+                showingWinScreen=false;
+            }
         }
 
         window.onload = function(){
@@ -53,22 +62,43 @@
                 var mousePos=calculateMousePos(evt);
                 paddle1Y=mousePos.y-(PADDLE_HEIGHT/2);
             })
+
+            canvas.addEventListener('mousedown',handleMouseClick);
+        }
+
+        function drawNet(){
+            for(var i=0; i<canvas.height; i+=40){
+                colorRect(canvas.width/2-1,i,2,20,'white');
+            }
+        }
+
+        function drawWin(){
+            if(player1Score > player2Score){
+                    canvasContext.fillStyle='white';
+                    canvasContext.fillText("left player won!", canvas.width/2, canvas.height/4);
+                } else{
+                    canvasContext.fillStyle='white';
+                    canvasContext.fillText("right player won!", canvas.width/2, canvas.height/4);
+                }
+                canvasContext.fillStyle='white';
+                canvasContext.fillText("Click to Continue",canvas.width/2,canvas.height/2);
         }
 
         function drawEverything(){
-            //log call
-            //console.log("called drawEverything()");
-           
             // draw black canvas
             colorRect(0,0,canvas.width,canvas.height,'black');
+            if(showingWinScreen){
+                drawWin();
+                return;
+            }
+            drawNet();
             //draw ball
-            colorCircle(ballX,ballY,ballRadius,'white');
+            colorCircle(ballX,ballY,ballRadius,'red');
             //draw left paddle
             colorRect(0,paddle1Y,PADDLE_WIDTH,PADDLE_HEIGHT,'white');
             //draw right paddle
             colorRect(canvas.width-PADDLE_WIDTH,paddle2Y,PADDLE_WIDTH,PADDLE_HEIGHT,'white');
-
-            //score boxes
+            //draw score boxes
             canvasContext.fillText(player1Score, 100,100);
             canvasContext.fillText(player2Score, (canvas.width-100),100);
         }
@@ -88,8 +118,7 @@
 
         function ballReset(){
             if(player1Score>=WINNING_SCORE||player2Score>=WINNING_SCORE){
-                player1Score=0;
-                player2Score=0;
+                showingWinScreen=true;
             }
             ballSpeedX*=-1;
             ballX=canvas.width/2;
@@ -106,6 +135,9 @@
         }
 
         function moveEverything(){
+            if(showingWinScreen){
+                return;
+            }
              //update ball position
              ballX+=ballSpeedX;
              ballY+=ballSpeedY;
@@ -139,5 +171,4 @@
              }
         }
     </script>
-    <p>above this is the script.</p>
 </html>
