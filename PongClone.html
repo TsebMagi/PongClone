@@ -5,28 +5,33 @@
     <script>
         var canvas;
         var canvasContext;
-        var ballX = 50;
-        var ballY = 50;
+        var ballX=50;
+        var ballY=50;
 
         window.onload = function(){
-            console.log("hello world!");
+            //console.log("hello world!");
             canvas = document.getElementById('gameCanvas');
             canvasContext = canvas.getContext('2d');
-            setInterval(drawEverything,100);
+            var framesPerSecond=30;
+            setInterval(drawEverything,1000/framesPerSecond);
         }
 
         function drawEverything(){
             //log call
-            console.log("called drawEverything()");
+            //console.log("called drawEverything()");
             //update ball position
             ballX+=1;
             // draw black canvas
-            canvasContext.fillStyle = 'black';
+            canvasContext.fillStyle='black';
             canvasContext.fillRect(0,0,canvas.width,canvas.height);
             //draw ball
-            console.log("ball at: "+ballX+","+ballY);
+            //console.log("ball at: "+ballX+","+ballY);
             canvasContext.fillStyle='red';
             canvasContext.fillRect(ballX,ballY,10,10);
+
+            //draw paddle
+            canvasContext.fillStyle='white';
+            canvasContext.fillRect(0,210,10,100);
         }
     </script>
     <p>above this is the script.</p>
