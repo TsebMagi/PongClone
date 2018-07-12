@@ -15,6 +15,8 @@
         var ballHeight=10;
         //paddle vars
         var paddle1Y=250;
+
+        const PADDLE_WIDTH=10;
         const PADDLE_HEIGHT=100;
 
         function calculateMousePos(evt){
@@ -53,7 +55,7 @@
             //draw ball
             colorCircle(ballX,ballY,ballRadius,'white');
             //draw left paddle
-            colorRect(0,paddle1Y,10,PADDLE_HEIGHT,'white');
+            colorRect(0,paddle1Y,PADDLE_WIDTH,PADDLE_HEIGHT,'white');
         }
 
         function colorCircle(centerX,centerY,radius,drawcolor){
@@ -78,6 +80,9 @@
              //update ball position
              ballX+=ballSpeedX;
              ballY+=ballSpeedY;
+             if(ballX-ballRadius-PADDLE_WIDTH<0 && ballY>paddle1Y && ballY<paddle1Y+PADDLE_HEIGHT){
+                 ballSpeedX*=-1;
+             }
              if(ballX>canvas.width-ballRadius || ballX-ballRadius<0){
                  ballSpeedX*=-1;
                  ballReset();
