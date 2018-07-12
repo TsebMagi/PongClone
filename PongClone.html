@@ -10,8 +10,23 @@
         var ballX=50;
         var ballY=50;
         var ballSpeedX=5;
+        var ballSpeedY=5;
         var ballRadius=10;
         var ballHeight=10;
+        //paddle vars
+        var paddle1Y=250;
+        const PADDLE_HEIGHT=100;
+
+        function calculateMousePos(evt){
+            var rect=canvas.getBoundingClientRect();
+            var root=document.documentElement;
+            var mouseX=evt.clientX-rect.left-root.scrollLeft;
+            var mouseY=evt.clientY-rect.top-root.scrollTop;
+            return{
+                x:mouseX,
+                y:mouseY
+            };
+        }
 
         window.onload = function(){
             //console.log("hello world!");
@@ -22,6 +37,11 @@
                 moveEverything();
                 drawEverything();
             },1000/framesPerSecond);
+            
+            canvas.addEventListener('mousemove',function(evt){
+                var mousePos=calculateMousePos(evt);
+                paddle1Y=mousePos.y-(PADDLE_HEIGHT/2);
+            })
         }
 
         function drawEverything(){
@@ -31,14 +51,17 @@
             // draw black canvas
             colorRect(0,0,canvas.width,canvas.height,'black');
             //draw ball
-            //console.log("ball at: "+ballX+","+ballY);
-            canvasContext.fillStyle='white';
-            canvasContext.beginPath();
-            canvasContext.arc(ballX,ballY,ballRadius,0,Math.PI*2,true);
-            canvasContext.fill();
-
+            colorCircle(ballX,ballY,ballRadius,'white');
             //draw left paddle
-            colorRect(0,210,10,100,'white');
+            colorRect(0,paddle1Y,10,PADDLE_HEIGHT,'white');
+        }
+
+        function colorCircle(centerX,centerY,radius,drawcolor){
+             //console.log("ball at: "+ballX+","+ballY);
+             canvasContext.fillStyle=drawcolor;
+            canvasContext.beginPath();
+            canvasContext.arc(centerX,centerY,radius,0,Math.PI*2,true);
+            canvasContext.fill();
         }
 
         function colorRect(leftX,topY,width,height,drawColor){
@@ -49,8 +72,12 @@
         function moveEverything(){
              //update ball position
              ballX+=ballSpeedX;
+             ballY+=ballSpeedY;
              if(ballX>canvas.width-ballRadius || ballX-ballRadius<0){
                  ballSpeedX*=-1;
+             }
+             if(ballY>canvas.height-ballRadius || ballY-ballRadius<0){
+                 ballSpeedY*=-1;
              }
         }
     </script>
