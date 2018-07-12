@@ -15,6 +15,7 @@
         var ballHeight=10;
         //paddle vars
         var paddle1Y=250;
+        var paddle2Y=250;
 
         const PADDLE_WIDTH=10;
         const PADDLE_HEIGHT=100;
@@ -56,6 +57,8 @@
             colorCircle(ballX,ballY,ballRadius,'white');
             //draw left paddle
             colorRect(0,paddle1Y,PADDLE_WIDTH,PADDLE_HEIGHT,'white');
+            //draw right paddle
+            colorRect(canvas.width-PADDLE_WIDTH,paddle2Y,PADDLE_WIDTH,PADDLE_HEIGHT,'white');
         }
 
         function colorCircle(centerX,centerY,radius,drawcolor){
@@ -81,6 +84,9 @@
              ballX+=ballSpeedX;
              ballY+=ballSpeedY;
              if(ballX-ballRadius-PADDLE_WIDTH<0 && ballY>paddle1Y && ballY<paddle1Y+PADDLE_HEIGHT){
+                 ballSpeedX*=-1;
+             }
+             if(ballX>canvas.width-(ballRadius+PADDLE_WIDTH) && ballY>paddle2Y && ballY<paddle2Y+PADDLE_HEIGHT){
                  ballSpeedX*=-1;
              }
              if(ballX>canvas.width-ballRadius || ballX-ballRadius<0){
