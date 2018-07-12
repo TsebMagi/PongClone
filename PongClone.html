@@ -9,16 +9,23 @@
         //ball vars
         var ballX=50;
         var ballY=50;
-        var ballSpeedX=5;
-        var ballSpeedY=5;
+        var ballSpeedX=10;
+        var ballSpeedY=10;
         var ballRadius=10;
         var ballHeight=10;
         //paddle vars
         var paddle1Y=250;
         var paddle2Y=250;
-
+        //Computer movement vars
+        var paddle2Movement=6;
+        const COMPUTER_OFFSET=35;
+        //paddle consts
         const PADDLE_WIDTH=10;
         const PADDLE_HEIGHT=100;
+        const DEFLECT_DAMPENING=0.35
+        //scores
+        var player1Score=0;
+        var player2Score=0;
 
         function calculateMousePos(evt){
             var rect=canvas.getBoundingClientRect();
@@ -59,6 +66,10 @@
             colorRect(0,paddle1Y,PADDLE_WIDTH,PADDLE_HEIGHT,'white');
             //draw right paddle
             colorRect(canvas.width-PADDLE_WIDTH,paddle2Y,PADDLE_WIDTH,PADDLE_HEIGHT,'white');
+
+            //score boxes
+            canvasContext.fillText(player1Score, 100,100);
+            canvasContext.fillText(player2Score, (canvas.width-100),100);
         }
 
         function colorCircle(centerX,centerY,radius,drawcolor){
@@ -75,24 +86,48 @@
         }
 
         function ballReset(){
+            ballSpeedX*=-1;
             ballX=canvas.width/2;
             ballY=canvas.height/2
+        }
+
+        function computerMovement(){
+            var paddle2Center= paddle2Y+(PADDLE_HEIGHT/2)
+            if(paddle2Center < ballY-COMPUTER_OFFSET){
+                paddle2Y+=paddle2Movement;
+            } else if(paddle2Center > ballY+COMPUTER_OFFSET){
+                paddle2Y-=paddle2Movement;
+            }
         }
 
         function moveEverything(){
              //update ball position
              ballX+=ballSpeedX;
              ballY+=ballSpeedY;
+             computerMovement();
+             // see if the ball is defelcting off of a paddle
              if(ballX-ballRadius-PADDLE_WIDTH<0 && ballY>paddle1Y && ballY<paddle1Y+PADDLE_HEIGHT){
+                 var deltaY=ballY-(paddle1Y+PADDLE_HEIGHT/2);
+                 ballSpeedY=deltaY*DEFLECT_DAMPENING;
                  ballSpeedX*=-1;
              }
-             if(ballX>canvas.width-(ballRadius+PADDLE_WIDTH) && ballY>paddle2Y && ballY<paddle2Y+PADDLE_HEIGHT){
+            if(ballX>canvas.width-(ballRadius+PADDLE_WIDTH) && ballY>paddle2Y && ballY<paddle2Y+PADDLE_HEIGHT){
+                var deltaY=ballY-(paddle2Y+PADDLE_HEIGHT/2);
+                ballSpeedY=deltaY*DEFLECT_DAMPENING;
                  ballSpeedX*=-1;
              }
-             if(ballX>canvas.width-ballRadius || ballX-ballRadius<0){
-                 ballSpeedX*=-1;
-                 ballReset();
+             //see if ball is off either side and award points
+             var reset = false;
+             if(ballX>canvas.width-ballRadius){
+                 player1Score++;
+                 reset=true;
              }
+             if(ballX-ballRadius<0){
+                 player2Score++;
+                 reset=true;
+             }
+             if(reset==true){ballReset();}
+
              if(ballY>canvas.height-ballRadius || ballY-ballRadius<0){
                  ballSpeedY*=-1;
              }
